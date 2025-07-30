@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>MathBuddy</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/12.4.1/math.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #ffce84;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      min-height: 100vh;
+      padding-top: 70px;
+      background-size: cover;
+      background-attachment: fixed;
+      margin: 0;
+      padding-bottom: 20px;
+    }
+
+    .header {
+      background: #4A90E2;
+      color: white;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+    }
+
+    .header h1 {
+      font-size: 24px;
+      font-weight: 600;
+      margin-right: 10px;
+    }
+
+    .auth-section {
+      position: relative;
+    }
+
+    .user-icon {
+      background: #4A90E2;
+      border: none;
+      color: #fff;
+      font-size: 20px;
+      cursor: pointer;
+      padding: 10px 14px;
+      border-radius: 6px;
+      transition: background 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .user-icon:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    .dropdown-menu {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      min-width: 120px;
+      display: none;
+      z-index: 1001;
+    }
+
+    .dropdown-menu.show {
+      display: block;
+    }
+
+    .dropdown-item {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      padding: 12px 18px;
+      border: none;
+      background: none;
+      text-align: left;
+      cursor: pointer;
+      font-size: 16px;
+      color: #333;
+      text-decoration: none;
+    }
+
+    .dropdown-item svg {
+      margin-right: 10px;
+    }
+
+    .dropdown-item:hover {
+      background: #f5f5f5;
+    }
+
+    .dropdown-item:first-child {
+      border-radius: 8px 8px 0 0;
+    }
+
+    .dropdown-item:last-child {
+      border-radius: 0 0 8px 8px;
+    }
+
+    .container {
+      max-width: 95%;
+      width: 95%;
+      margin: 20px 2.5vw;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 10px;
+      padding: 30px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      height: calc(100vh - 140px);
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+
+    .chat-bubble {
+      padding: 12px 15px;
+      border-radius: 12px;
+      margin-bottom: 12px;
+      font-size: 16px;
+      display: inline-block;
+      max-width: 70%;
+      word-wrap: break-word;
+      background: #E8E8E8;
+      color: #333;
+      line-height: 1.4;
+    }
+
+    .input-container {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 20px;
+      flex-shrink: 0;
+    }
+
+    .math-input {
+      flex: 1;
+      padding: 15px 18px;
+      border: 1px solid #ddd;
+      border-radius: 20px;
+      font-size: 16px;
+      outline: none;
+    }
+
+    .camera-btn {
+      background: #f5f5f5;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      padding: 15px 18px;
+      cursor: pointer;
+      font-size: 16px;
+      height: 54px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #666;
+      transition: all 0.2s;
+    }
+
+    .camera-btn:hover {
+      background: #e9e9e9;
+      transform: translateY(-1px);
+    }
+
+    .calculator-grid {
+      display: grid;
+      grid-template-columns: repeat(9, 1fr);
+      gap: 8px;
+      margin-top: 0;
+      margin-bottom: 25px;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+
+    .calc-button {
+      border: none;
+      border-radius: 8px;
+      padding: 15px 6px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-weight: 500;
+      min-height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-sizing: border-box;
+    }
+
+    .calc-button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn-number {
+      background: #f8f9fa;
+      color: #333;
+    }
+
+    .btn-operator {
+      background: #e9ecef;
+      color: #333;
+    }
+
+    .btn-function {
+      background: #e1d5f7;
+      color: #6f42c1;
+      font-size: 14px;
+    }
+
+    .btn-special {
+      background: #4A90E2;
+      color: white;
+    }
+
+    .btn-equals {
+      background: #4A90E2;
+      color: white;
+      grid-column: span 1;
+    }
+
+    .btn-backspace {
+      background: #4A90E2;
+      color: white;
+      grid-column: span 1;
+    }
+
+    .chat-section {
+      height: 200px;
+      overflow-y: auto;
+      margin-bottom: 15px;
+      padding: 5px 0;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .user-message {
+      background: #4A90E2;
+      color: white;
+      margin-left: auto;
+      margin-right: 0;
+      text-align: right;
+      border-radius: 12px 12px 3px 12px;
+      max-width: 70%;
+      font-size: 16px;
+      display: block;
+      width: fit-content;
+      margin-left: auto;
+    }
+
+    .bot-message {
+      background: #E8E8E8;
+      color: #333;
+      margin-right: auto;
+      margin-left: 0;
+      border-radius: 12px 12px 12px 3px;
+      line-height: 1.4;
+      max-width: 70%;
+      font-size: 16px;
+      display: block;
+      width: fit-content;
+    }
+
+    .camera-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 2000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .camera-content {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      max-width: 400px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+
+    .camera-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 15px;
+    }
+
+    .camera-header h3 {
+      margin: 0;
+      color: #333;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: #666;
+      padding: 0;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .camera-options {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .option-btn {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 15px 20px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      background: white;
+      cursor: pointer;
+      font-size: 16px;
+      transition: all 0.2s;
+    }
+
+    .option-btn:hover {
+      background: #f5f5f5;
+      border-color: #4A90E2;
+    }
+
+    .loading-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 3000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .loading-content {
+      background: white;
+      border-radius: 12px;
+      padding: 30px;
+      text-align: center;
+      color: #333;
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #4A90E2;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 15px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>MathBuddy</h1>
+    <div class="auth-section">
+      {% if user %}
+        <button class="user-icon" onclick="location.href='{{ url_for('logout') }}'">
+          Logout
+        </button>
+      {% else %}
+        <button class="user-icon" onclick="toggleDropdown()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+          </svg>
+        </button>
+        <div class="dropdown-menu" id="dropdownMenu">
+          <button class="dropdown-item" onclick="location.href='{{ url_for('signin') }}'">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="margin-right: 10px;">
+              <path d="M10,17V14H3V10H10V7L15,12L10,17M10,2H19A2,2 0 0,1 21,4V20A2,2 0 0,1 19,22H10A2,2 0 0,1 8,20V18H10V20H19V4H10V6H8V4A2,2 0 0,1 10,2Z"/>
+            </svg>
+            Sign In
+          </button>
+          <button class="dropdown-item" onclick="location.href='{{ url_for('signup') }}'">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="margin-right: 10px;">
+              <path d="M15,14C12.33,14 7,15.33 7,18V20H23V18C23,15.33 17.67,14 15,14M6,10V7H4V10H1V12H4V15H6V12H9V10M15,12A4,4 0 0,0 19,8A4,4 0 0,0 15,4A4,4 0 0,0 11,8A4,4 0 0,0 15,12Z"/>
+            </svg>
+            Sign Up
+          </button>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="chat-section" id="chatArea">
+      <div class="chat-bubble bot-message">Hi! Ada yang bisa aku bantu?</div>
+    </div>
+
+    <div class="input-container">
+      <input type="text" class="math-input" id="mathInput" placeholder="Masukkan masalahmu...">
+      <button class="camera-btn" onclick="openCamera()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M4,4H7L9,2H15L17,4H20A2,2 0 0,1 22,6V18A2,2 0 0,1 20,20H4A2,2 0 0,1 2,18V6A2,2 0 0,1 4,4M12,7A5,5 0 0,0 7,12A5,5 0 0,0 12,17A5,5 0 0,0 17,12A5,5 0 0,0 12,7M12,9A3,3 0 0,1 15,12A3,3 0 0,1 12,15A3,3 0 0,1 9,12A3,3 0 0,1 12,9Z"/>
+        </svg>
+      </button>
+      <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display: none;">
+      <input type="file" id="fileInput" accept="image/*" style="display: none;">
+    </div>
+
+    <!-- Camera Modal -->
+    <div class="camera-modal" id="cameraModal" style="display: none;">
+      <div class="camera-content">
+        <div class="camera-header">
+          <h3>Ambil Foto Soal</h3>
+          <button class="close-btn" onclick="closeCameraModal()">&times;</button>
+        </div>
+        <div class="camera-options">
+          <button class="option-btn" onclick="takePhoto()">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M4,4H7L9,2H15L17,4H20A2,2 0 0,1 22,6V18A2,2 0 0,1 20,20H4A2,2 0 0,1 2,18V6A2,2 0 0,1 4,4M12,7A5,5 0 0,0 7,12A5,5 0 0,0 12,17A5,5 0 0,0 17,12A5,5 0 0,0 12,7M12,9A3,3 0 0,1 15,12A3,3 0 0,1 12,15A3,3 0 0,1 9,12A3,3 0 0,1 12,9Z"/>
+            </svg>
+            Ambil Foto
+          </button>
+          <button class="option-btn" onclick="uploadFile()">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
+            </svg>
+            Upload File
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading Modal -->
+    <div class="loading-modal" id="loadingModal" style="display: none;">
+      <div class="loading-content">
+        <div class="spinner"></div>
+        <p>🔍 Memproses gambar...</p>
+        <small>Menganalisis soal matematika</small>
+      </div>
+    </div>
+
+    <div class="calculator-grid">
+      <!-- Row 1 -->
+      <button class="calc-button btn-number" onclick="addToInput('7')">7</button>
+      <button class="calc-button btn-number" onclick="addToInput('8')">8</button>
+      <button class="calc-button btn-number" onclick="addToInput('9')">9</button>
+      <button class="calc-button btn-operator" onclick="addToInput('÷')">÷</button>
+      <button class="calc-button btn-function" onclick="addToInput('(')">(</button>
+      <button class="calc-button btn-function" onclick="addToInput(')')">)</button>
+      <button class="calc-button btn-function" onclick="addToInput('[')">[</button>
+      <button class="calc-button btn-function" onclick="addToInput(']')">]</button>
+      <button class="calc-button btn-special" onclick="clearInput()">C</button>
+
+      <!-- Row 2 -->
+      <button class="calc-button btn-number" onclick="addToInput('4')">4</button>
+      <button class="calc-button btn-number" onclick="addToInput('5')">5</button>
+      <button class="calc-button btn-number" onclick="addToInput('6')">6</button>
+      <button class="calc-button btn-operator" onclick="addToInput('×')">×</button>
+      <button class="calc-button btn-function" onclick="addToInput('^')">^</button>
+      <button class="calc-button btn-function" onclick="addToInput('√()')">√</button>
+      <button class="calc-button btn-function" onclick="addToInput('∛()')">∛</button>
+      <button class="calc-button btn-function" onclick="addToInput('%')">%</button>
+      <button class="calc-button btn-backspace" onclick="backspace()">Del</button>
+
+
+      <!-- Row 3 -->
+      <button class="calc-button btn-number" onclick="addToInput('1')">1</button>
+      <button class="calc-button btn-number" onclick="addToInput('2')">2</button>
+      <button class="calc-button btn-number" onclick="addToInput('3')">3</button>
+      <button class="calc-button btn-operator" onclick="addToInput('-')">-</button>
+      <button class="calc-button btn-function" onclick="addToInput('sin()')">sin</button>
+      <button class="calc-button btn-function" onclick="addToInput('cos()')">cos</button>
+      <button class="calc-button btn-function" onclick="addToInput('tan()')">tan</button>
+      <button class="calc-button btn-function" onclick="addToInput('log()')">log</button>
+      <button class="calc-button btn-function" onclick="addToInput('ln()')">ln</button>
+
+      <!-- Row 4 -->
+      <button class="calc-button btn-number" onclick="addToInput('0')">0</button>
+      <button class="calc-button btn-number" onclick="addToInput('.')">.</button>
+      <button class="calc-button btn-equals" onclick="calculateResult()">=</button>
+      <button class="calc-button btn-operator" onclick="addToInput('+')">+</button>
+      <button class="calc-button btn-function" onclick="addToInput('!')">!</button>
+      <button class="calc-button btn-function" onclick="addToInput('pi')">π</button>
+      <button class="calc-button btn-function" onclick="addToInput('e')">e</button>
+      <button class="calc-button btn-function" onclick="addToInput('<')">&lt;</button>
+      <button class="calc-button btn-function" onclick="addToInput('>')">&gt;</button>
+    </div>
+  </div>
+
+  <script>
+    function toggleDropdown() {
+      const dropdown = document.getElementById('dropdownMenu');
+      dropdown.classList.toggle('show');
+    }
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(event) {
+      const authSection = document.querySelector('.auth-section');
+      const dropdown = document.getElementById('dropdownMenu');
+      
+      if (!authSection.contains(event.target)) {
+        dropdown.classList.remove('show');
+      }
+    });
+
+    const mathInput = document.getElementById('mathInput');
+    const chatArea = document.getElementById('chatArea');
+
+    function addToInput(value) {
+      if (value === 'pi') {
+        mathInput.value += 'π';
+      } else if (value === 'e') {
+        mathInput.value += 'e';
+      } else {
+        mathInput.value += value;
+      }
+    }
+
+    function clearInput() {
+      mathInput.value = '';
+    }
+
+    function backspace() {
+      mathInput.value = mathInput.value.slice(0, -1);
+    }
+
+    function addMessage(content, isUser = false) {
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `chat-bubble ${isUser ? 'user-message' : 'bot-message'}`;
+      messageDiv.innerHTML = content;
+      chatArea.appendChild(messageDiv);
+      
+      // Auto scroll to bottom setelah menambah pesan
+      setTimeout(() => {
+        chatArea.scrollTop = chatArea.scrollHeight;
+      }, 10);
+    }
+
+    function calculateResult() {
+      const expression = mathInput.value.trim();
+      if (!expression) return;
+
+      // Add user message
+      addMessage(expression, true);
+
+      try {
+        // Process expression for math.js
+        let processedExpr = expression
+          .replace(/π/g, 'pi')
+          .replace(/×/g, '*')
+          .replace(/÷/g, '/')
+          .replace(/√\(/g, 'sqrt(')
+          .replace(/∛\(/g, 'cbrt(')
+          .replace(/\^/g, '**');
+
+        // Handle completed equations (like 2^3=8)
+        if (expression.includes('=') && !expression.endsWith('=')) {
+          let [left, right] = expression.split('=');
+          
+          // Process left side for calculation
+          let leftProcessed = left
+            .replace(/π/g, 'pi')
+            .replace(/×/g, '*')
+            .replace(/÷/g, '/')
+            .replace(/\^/g, '**');
+          
+          try {
+            const leftResult = math.evaluate(leftProcessed);
+            const rightValue = parseFloat(right);
+            
+            if (Math.abs(leftResult - rightValue) < 0.0001) {
+              addMessage(`✅ <strong>Benar!</strong><br>${left} = ${leftResult}<br><br><strong>Penjelasan:</strong><br>Persamaan sudah benar: ${expression}`, false);
+            } else {
+              addMessage(`❌ <strong>Salah!</strong><br>${left} = ${leftResult}, bukan ${right}<br><br><strong>Hasil yang benar:</strong><br>${left} = ${leftResult}`, false);
+            }
+          } catch {
+            addMessage(`<strong>Hasil:</strong><br>${expression}`, false);
+          }
+          
+          mathInput.value = '';
+          return;
+        }
+
+        const result = math.evaluate(processedExpr);
+
+        // Generate detailed steps based on expression type
+        let response = generateDetailedSteps(expression, processedExpr, result);
+
+        addMessage(response, false);
+        mathInput.value = '';
+
+      } catch (error) {
+        console.error('Math evaluation error:', error);
+        addMessage('<span style="color: red;">Ekspresi tidak valid. Silakan periksa format penulisan.</span>', false);
+      }
+    }
+
+    function getExactTrigValue(func, angle) {
+      // Normalize angle to 0-360 range
+      angle = angle % 360;
+      if (angle < 0) angle += 360;
+      
+      const trigValues = {
+        sin: {
+          0: '0', 30: '<div style="display: inline-block; text-align: center; vertical-align: middle;"><div style="border-bottom: 1px solid black; padding-bottom: 2px;">1</div><div style="padding-top: 2px;">2</div></div>', 
+          45: '<div style="display: inline-block; text-align: center; vertical-align: middle;"><div style="border-bottom: 1px solid black; padding-bottom: 2px;">1</div><div style="padding-top: 2px;">2</div></div>√2', 
+          60: '<div style="display: inline-block; text-align: center; vertical-align: middle;"><div style="border-bottom: 1px solid black; padding-bottom: 2px;">1</div><div style="padding-top: 2px;">2</div></div>√3', 90: '1',
+          120: '<div style="display: inline-block; text-align: center; vertical-align: middle;"><div style="border-bottom: 1px solid black; padding-bottom: 2px;">1</div><div style="padding-top: 2px;">2</div></div>√3', 
+          135: '<div style="display: inline-block; text-align: center; vertical-align: middle;"><div style="border-bottom: 1px solid black; padding-bottom: 2px;">1</div><div style="padding-top: 2px;">2</div></div>√2', 
+          150: '<div style="display: inline-block; text-align: center; vertical-align: middle;"><div style="border-bottom: 1px solid black; padding-bottom: 2px;">1</div><div style="padding-top: 2px;">2</div></div>', 180: '0',
+          210: '-<div style="display: inline-block; text-align: center; vertical-align: middle;"><div style="border-bottom: 1px solid black; padding-bottom: 2px;">1</div><div style="padding-top: 2px;">2</div></div>', 
+          225: '-<div style="display: inline-block; text-align: center; vertical-align: middle;"><div style="border-bottom: 1px solid black; padding-bottom: 2px;">1</div><div style="padding-top: 2px;">2</div></div>√2', 
+          240: '-<div style="display: inline-block; text-align: center; vertical-align: middle;"><div style="border-bottom: 1px solid black; padding-bottom: 2px;">1</div><div style="padding-top: 2px;">2</div></div>√3', 270: '-1',
+          300: '-<div style="display: inline-block; text-align: center; vertical-align: middle;"><div style="border-bottom: 1px solid black; padding-bottom: 2px;">1</div><div style="padding-top: 2px;">2</div></div>√3', 
+          315: '-<div style="display: inline-block; text-align: center; vertical-align: middle;"><div style="border-bottom: 1px solid black; padding-bottom: 2px;">1</div><div style="padding-top: 2px;">2</div></div>√2', 
+          330: '-<div style="display: inline-block; text-align: center; vertical-align: middle;"><div style="border-bottom: 1px solid black; padding-bottom: 2px;">1</div><div style="padding-top: 2px;">2</div></div>', 360: '0'
+        },
+        cos: {
+          0: '1', 30: '<div style="display: inline-block; text-align: center; vertical-align: middle;"><div style="border-bottom: 1px solid black; padding-bottom: 2px;">1</div><div style="padding-top: 2px;">2</div></div>√3', 
+          45: '<div style="display: inline-block; text-align: center; vertical-align: middle;"><div style="border-bottom: 1px solid black; padding-bottom: 2px;">1</div><div style="padding-top: 2px;">2</div></div>√2', 
+          60: '<div style="display: inline-block; text-align: center; vertical-align: middle;"><div style="border-bottom: 1px solid black; padding-bottom: 2px;">1</div><div style="padding-top: 2px;">2</div></div>', 90: '0',
+          120: '-<div style="display: inline-block; text-align: center; vertical-align: middle;"><div style="border-bottom: 1px solid black; padding-bottom: 2px;">1</div><div style="padding-top: 2px;">2</div></div>', 
+          135: '-<div style="display: inline-block; text-align: center; vertical-align: middle;"><div style="border-bottom: 1px solid black; padding-bottom: 2px;">1</div><div style="padding-top: 2px;">2</div></div>√2', 
+          150: '-<div style="display: inline-block; text-align: center; vertical-align: middle;"><div style="border-bottom: 1px solid black; padding-bottom: 2px;">1</div><div style="padding-top: 2px;">2</div></div>√3', 180: '-1',
+          210: '-<div style="display: inline-block; text-align: center; vertical-align: middle;"><div style="border-bottom: 1px solid black; padding-bottom: 2px;">1</div><div style="padding-top: 2px;">2</div></div>√3', 
+          225: '-<div style="display: inline-block; text-align: center; vertical-align: middle;"><div style="border-bottom: 1px solid black; padding-bottom: 2px;">1</div><div style="padding-top: 2px;">2</div></div>√2', 
+          240: '-<div style="display: inline-block; text-align: center; vertical-align: middle;"><div style="border-bottom: 1px solid black; padding-bottom: 2px;">1</div><div style="padding-top: 2px;">2</div></div>', 270: '0',
+          300: '<div style="display: inline-block; text-align: center; vertical-align: middle;"><div style="border-bottom: 1px solid black; padding-bottom: 2px;">1</div><div style="padding-top: 2px;">2</div></div>', 
+          315: '<div style="display: inline-block; text-align: center; vertical-align: middle;"><div style="border-bottom: 1px solid black; padding-bottom: 2px;">1</div><div style="padding-top: 2px;">2</div></div>√2', 
+          330: '<div style="display: inline-block; text-align: center; vertical-align: middle;"><div style="border-bottom: 1px solid black; padding-bottom: 2px;">1</div><div style="padding-top: 2px;">2</div></div>√3', 360: '1'
+        },
+        tan: {
+          0: '0', 30: '<div style="display: inline-block; text-align: center; vertical-align: middle;"><div style="border-bottom: 1px solid black; padding-bottom: 2px;">1</div><div style="padding-top: 2px;">3</div></div>√3', 
+          45: '1', 60: '√3', 90: '∞',
+          120: '-√3', 135: '-1', 150: '-<div style="display: inline-block; text-align: center; vertical-align: middle;"><div style="border-bottom: 1px solid black; padding-bottom: 2px;">1</div><div style="padding-top: 2px;">3</div></div>√3', 180: '0',
+          210: '<div style="display: inline-block; text-align: center; vertical-align: middle;"><div style="border-bottom: 1px solid black; padding-bottom: 2px;">1</div><div style="padding-top: 2px;">3</div></div>√3', 
+          225: '1', 240: '√3', 270: '∞',
+          300: '-√3', 315: '-1', 330: '-<div style="display: inline-block; text-align: center; vertical-align: middle;"><div style="border-bottom: 1px solid black; padding-bottom: 2px;">1</div><div style="padding-top: 2px;">3</div></div>√3', 360: '0'
+        }
+      };
+      
+      if (trigValues[func][angle]) {
+        return trigValues[func][angle];
+      }
+      
+      // For non-standard angles, return decimal approximation
+      let radians = angle * Math.PI / 180;
+      let result;
+      if (func === 'sin') result = Math.sin(radians);
+      else if (func === 'cos') result = Math.cos(radians);
+      else if (func === 'tan') result = Math.tan(radians);
+      
+      return result.toFixed(4);
+    }
+
+      function generateDetailedSteps(originalExpr, processedExpr, result) {
+      let steps = `<strong>Langkah 1:</strong><br>${originalExpr}<br><br>`;
+      
+      // Handle power expressions with detailed steps
+      if (originalExpr.includes('^')) {
+        let match = originalExpr.match(/(\d+)\^(\d+)/);
+        if (match) {
+          let base = match[1];
+          let exp = match[2];
+          let calculation = Array(parseInt(exp)).fill(base).join(' × ');
+          let powerResult = Math.pow(parseInt(base), parseInt(exp));
+          
+          steps += `<strong>Langkah 2:</strong><br>`;
+          steps += `${base}^${exp} = ${calculation}<br>`;
+          steps += `${calculation} = ${powerResult}<br><br>`;
+          
+          // Check if there are other operations
+          let remaining = originalExpr.replace(`${base}^${exp}`, powerResult.toString());
+          if (remaining !== powerResult.toString()) {
+            steps += `<strong>Langkah 3:</strong><br>`;
+            steps += `Maka, ${remaining}<br>`;
+            steps += `= ${result}<br><br>`;
+          }
+          
+          steps += `<strong>Hasil:</strong><br>${result}`;
+          return steps;
+        }
+      }
+      
+      // Handle complex expressions with multiple operations
+      let expr = originalExpr;
+      let stepCount = 2;
+      
+      // Step 2: Handle parentheses, multiplication, division, and functions
+      let hasHighPriorityOps = false;
+      let step2Operations = [];
+      
+      // Check for parentheses
+      let parenMatches = expr.match(/\([^()]+\)/g);
+      if (parenMatches) {
+        hasHighPriorityOps = true;
+        parenMatches.forEach(paren => {
+          let innerExpr = paren.slice(1, -1);
+          try {
+            let innerResult = math.evaluate(innerExpr.replace(/×/g, '*').replace(/÷/g, '/'));
+            step2Operations.push(`${paren} = ${innerResult}`);
+            expr = expr.replace(paren, innerResult.toString());
+          } catch (e) {}
+        });
+      }
+      
+      // Check for trigonometric functions
+      let trigMatches = expr.match(/(sin|cos|tan|log|ln)\([^)]+\)/g);
+      if (trigMatches) {
+        hasHighPriorityOps = true;
+        trigMatches.forEach(trigFunc => {
+          try {
+            let trigResult = math.evaluate(trigFunc);
+            step2Operations.push(`${trigFunc} = ${trigResult.toFixed(4)}`);
+            expr = expr.replace(trigFunc, trigResult.toString());
+          } catch (e) {}
+        });
+      }
+      
+      // Check for multiplication and division
+      let multDivMatches = expr.match(/\d+(\.\d+)?\s*[×÷*/]\s*\d+(\.\d+)?/g);
+      if (multDivMatches) {
+        hasHighPriorityOps = true;
+        multDivMatches.forEach(operation => {
+          try {
+            let processedOp = operation.replace(/×/g, '*').replace(/÷/g, '/');
+            let opResult = math.evaluate(processedOp);
+            step2Operations.push(`${operation} = ${opResult}`);
+            expr = expr.replace(operation, opResult.toString());
+          } catch (e) {}
+        });
+      }
+      
+      if (hasHighPriorityOps) {
+        steps += `<strong>Langkah ${stepCount}:</strong><br>`;
+        step2Operations.forEach(op => {
+          steps += `${op}<br>`;
+        });
+        steps += `Maka, ${expr}<br><br>`;
+        stepCount++;
+      }
+      
+      // Step 3: Handle addition and subtraction
+      let addSubMatches = expr.match(/\d+(\.\d+)?\s*[+\-]\s*\d+(\.\d+)?/g);
+      if (addSubMatches && addSubMatches.length > 0) {
+        steps += `<strong>Langkah ${stepCount}:</strong><br>`;
+        
+        // Process left to right for addition and subtraction
+        let tempExpr = expr;
+        let operations = [];
+        
+        // Find all + and - operations
+        let matches = tempExpr.match(/(\d+(?:\.\d+)?)\s*([+\-])\s*(\d+(?:\.\d+)?)/g);
+        if (matches) {
+          let currentResult = parseFloat(tempExpr.match(/^\d+(?:\.\d+)?/)[0]);
+          let remaining = tempExpr.replace(/^\d+(?:\.\d+)?/, '');
+          
+          while (remaining.length > 0) {
+            let match = remaining.match(/^\s*([+\-])\s*(\d+(?:\.\d+)?)/);
+            if (match) {
+              let operator = match[1];
+              let operand = parseFloat(match[2]);
+              
+              if (operator === '+') {
+                operations.push(`${currentResult} + ${operand} = ${currentResult + operand}`);
+                currentResult += operand;
+              } else {
+                operations.push(`${currentResult} - ${operand} = ${currentResult - operand}`);
+                currentResult -= operand;
+              }
+              
+              remaining = remaining.replace(match[0], '');
+            } else {
+              break;
+            }
+          }
+        }
+        
+        operations.forEach(op => {
+          steps += `${op}<br>`;
+        });
+        steps += `<br>`;
+      }
+      
+      steps += `<strong>Hasil:</strong><br>${result}`;
+      return steps;
+    }
+
+    // Enter key support
+    mathInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter' || e.keyCode === 13) {
+        e.preventDefault();
+        calculateResult();
+      }
+    });
+
+    // Backup event listener
+    mathInput.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' || e.keyCode === 13) {
+        e.preventDefault();
+        calculateResult();
+      }
+    });
+
+    function openCamera() {
+      document.getElementById('cameraModal').style.display = 'flex';
+    }
+
+    function closeCameraModal() {
+      document.getElementById('cameraModal').style.display = 'none';
+    }
+
+    function takePhoto() {
+      document.getElementById('cameraInput').click();
+      closeCameraModal();
+    }
+
+    function uploadFile() {
+      document.getElementById('fileInput').click();
+      closeCameraModal();
+    }
+
+    // Handle camera input
+    document.getElementById('cameraInput').addEventListener('change', function(e) {
+      if (e.target.files && e.target.files[0]) {
+        processImage(e.target.files[0]);
+      }
+    });
+
+    // Handle file input
+    document.getElementById('fileInput').addEventListener('change', function(e) {
+      if (e.target.files && e.target.files[0]) {
+        processImage(e.target.files[0]);
+      }
+    });
+
+    function processImage(file) {
+      // Show loading
+      document.getElementById('loadingModal').style.display = 'flex';
+      
+      const formData = new FormData();
+      formData.append('image', file);
+      
+      fetch('/process-image', {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+        document.getElementById('loadingModal').style.display = 'none';
+        
+        if (data.success) {
+          // Add extracted text to input
+          mathInput.value = data.text;
+          
+          // Add detailed message to chat
+          let message = `📸 <strong>Gambar berhasil diproses!</strong><br>`;
+          message += `<strong>Soal terdeteksi:</strong> ${data.text}<br>`;
+          
+          if (data.patterns && data.patterns.length > 0) {
+            message += `<strong>Jenis soal:</strong> ${data.patterns.join(', ')}<br>`;
+          }
+          
+          if (data.raw_text !== data.text) {
+            message += `<small><em>Teks asli: ${data.raw_text}</em></small>`;
+          }
+          
+          addMessage(message, true);
+          
+          // Auto calculate if possible
+          if (data.text.trim()) {
+            setTimeout(() => calculateResult(), 1000);
+          }
+        } else {
+          addMessage(`❌ <strong>Error:</strong> ${data.error}<br><br>
+            <strong>Tips untuk hasil terbaik:</strong><br>
+            • Pastikan gambar jelas dan tidak buram<br>
+            • Gunakan pencahayaan yang cukup<br>
+            • Pastikan soal matematika tertulis dengan jelas<br>
+            • Hindari bayangan atau refleksi pada gambar`, false);
+        }
+      })
+      .catch(error => {
+        document.getElementById('loadingModal').style.display = 'none';
+        addMessage('❌ Terjadi kesalahan saat memproses gambar. Silakan coba lagi.', false);
+        console.error('Error:', error);
+      });
+    }
+
+    // Close modal when clicking outside
+    document.getElementById('cameraModal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeCameraModal();
+      }
+    });
+  </script>
+</body>
+</html>

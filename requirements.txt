@@ -1,0 +1,8 @@
+Flask
+firebase-admin
+Werkzeug
+opencv-python
+numpy
+Pillow
+pytesseract
+pyrebase4

@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "mathbuddy-2a979",
+  "private_key_id": "56ab81324c9f8cbb6493bc15888c54ad671bf244",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQDr6HTgmb4XZmkq\n1dnYAplgQsUkbeHFRRYrURQuFrvbixMBGuF6wjklnyupJaxbKfj4PANSsy6Rhc+d\nt6yYl2eJyN4EQsYsZBhHDihfhiSGmGhaG6Zka7RuU1zg6r5yd35kKDv7kUgFRC3k\nCziiN3a3IG3XsEqgvvO3EFXQW5ADsl7vj8XQK111qkXEB9wzM4Wj0Ot7pKjxnLCx\nc8ocCfbEq4HrgwQMwGEiHg7hH3mWlAgLbVndsmmVhaT3giy9vnkr/3T4FpDyRMC3\n4QCP7RVrNxX0NyIFg5JQ8rDbeQRR6g3TA/gdfOnHCMjwdUzSjexVaVnalGCckdBV\nc0HCeREBAgMBAAECggEAD+jC03ZhN/HFOOLOiKWp00oqQmOSQyJk6HHub8QPuJjf\niyA72yWbAs41SXhyPONCC5EvuWJYSyJGvWbdu5xGTfTFm2yNy2bKrljZk/hkOs5J\nB0tv3e897hmU6dD0gmkYyHqTWDFUtcPPaatW2+jsPbuKcAfPC80k4Xa3QTbTkDQh\nN2dpq9594FQF45Mt7zHjLiuU/ETEv+34oGyDyExJRs+ZNqZYJGA7VyP8073oxc9y\nJQSpasNDi1VrMTdxrh94Rlv85Hh8lQ2zjFWD4VxXr4pMBNiqUYYmobECYWNeg3n9\ndGXX7BNNnSKcjZRuJnWvnYOBdg5MxMT7lqGhCPMHawKBgQD7d3UD0DvBP0Q8eSqT\nq9BoEGue1RLYYc24G7knib0S9X1ACZHZUIyt9vngn9BP6WtVefbaVkMZWkxzt8ol\n+o08sG6rvoQNEOTrquOhUOCDVwTmXNqRuAB3BcRWov1VKtYpVFjVQOmOYENHzaam\nKOx5rzZ4/RWTBcF5L7Yn5bm4YwKBgQDwKTHtoMV/eF9Q+Lzo72FDcTBZaHZEBMyR\n3YzvECxrhZd0asrLM9MxvI3ZvRxSyeSrkUV4dI2eN+OjrbMwqOMHijLuZWpBhyBT\nb4ApAlJku30fYc0zqAkAt2Uwc/AM5El+AejMnqeuwuJYP72P6UeSK6+I6YK9imLw\nWgBJih+ESwKBgD6ATWw6OG/qqqohL4zummkTE7yxlvKDNJ96/IUwPfdVXuEov8B0\nvdKLXUYQUrVZ/dyL6OgRorHNeM0WND9GTA52h7tWKfoZZdyRZ+xzbqoWWdhr4cNw\nKWVr4IXsEu01LW+uUDoI3UQO9woEulP4PfZsryxZMyCMwK6/RhYaihOjAoGAQ11a\nyuvw2huaqOzMmI4k+zTxufKKUfQCqdu6X4hq3VIgtKAL+Em2MNpR88SPAE3vXYyn\nLu2Kl9nXeZ8Mh1aoMAI83RAHaRANKjo5ecdT8zuAEmBtndLBi7jlolyy9frG/phs\ng5DxOh0iPlzKwGZQFBk66K2PZbk+nWqxb+9VfdcCgYAwA0rwLiGDSf7xfr21LbPp\nxjObYmj0SFjAzwJgKHdcRCtezVtnWD1ZAhEDk0I08rjl6HmbjJxVVmrhqT1JsZBx\nm+xhMOTfmAuC5rTsTw9oiXFApK2TWUa1INfHZY0agr71C/qxMDocIPoA+lJ/xy3X\nGQpidJWgbO218s2CthBc5Q==\n-----END PRIVATE KEY-----\n",
+  "client_email": "firebase-adminsdk-fbsvc@mathbuddy-2a979.iam.gserviceaccount.com",
+  "client_id": "100318231689606465791",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-fbsvc%40mathbuddy-2a979.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
